@@ -28,14 +28,14 @@ public class Player : MonoBehaviour
         InitializeStartPosiotion();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         move.Move(this);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Wall")
+        if (collision.tag == "Wall")
         {
             LoseGameEvent?.Invoke();
         }
