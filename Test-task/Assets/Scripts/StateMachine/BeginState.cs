@@ -11,7 +11,6 @@ public class BeginState : State
 
     public override IEnumerator Start()
     {
-        Debug.Log("Begin");
         gameStateMachine = stateMachine as GameStateMachine;
         player = gameStateMachine.Player;
         screens = gameStateMachine.Screens;

@@ -10,11 +10,14 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerMove move;
 
     [Inject] private PlayerControlSO playerControlSO;
+    [Inject] private Timer timer;
 
     public PlayerMove Move => move;
+    public Vector3 startPosiotion;
 
     private Rigidbody2D playerRigidbody;
     private KeyCode upKey;
+    private float upVelocityVertical = 50;
 
 
     private void Awake()
@@ -22,6 +25,7 @@ public class Player : MonoBehaviour
         InitializeRigidbody();
         InitializeUpKey();
         InitializeMove();
+        InitializeStartPosiotion();
     }
 
     private void Update()
@@ -40,11 +44,18 @@ public class Player : MonoBehaviour
     private void OnEnable()
     {
         playerRigidbody.velocity = Vector3.zero;
+        timer.secondsPassedEvent += UpVelocityVertical;
     }
 
     private void OnDisable()
     {
         playerRigidbody.velocity = Vector3.zero;
+        timer.secondsPassedEvent -= UpVelocityVertical;
+    }
+
+    public void SetStartPosiotion()
+    {
+        transform.position = startPosiotion;
     }
 
     private void InitializeRigidbody()
@@ -60,5 +71,15 @@ public class Player : MonoBehaviour
     private void InitializeMove()
     {
         move.Initialize(playerRigidbody, upKey);
+    }
+
+    private void InitializeStartPosiotion()
+    {
+        startPosiotion = transform.position;
+    }
+
+    private void UpVelocityVertical()
+    {
+        move.UpVelocityVertical(upVelocityVertical);
     }
 }

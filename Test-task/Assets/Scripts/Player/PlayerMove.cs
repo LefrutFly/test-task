@@ -12,16 +12,28 @@ public class PlayerMove
     public float VelocityHorizontal1 => velocityHorizontal1;
     public float VelocityHorizontal2 => velocityHorizontal2;
     public float VelocityHorizontal3 => velocityHorizontal3;
-    public float VelocityVertical => velocityVertical;
+    public float VelocityVertical { get => velocityVertical; set => velocityVertical = value; }
 
     private float currentVelocityHorizontal;
     private Rigidbody2D playerRigidbody;
     private KeyCode upKey;
+    private float startVelocityVertical;
 
     public void Initialize(Rigidbody2D playerRigidbody, KeyCode upKey)
     {
+        startVelocityVertical = velocityVertical;
         this.playerRigidbody = playerRigidbody;
         this.upKey = upKey;
+    }
+
+    public void SetStartVelocityVertical()
+    {
+        velocityVertical = startVelocityVertical;
+    }
+
+    public void UpVelocityVertical(float up)
+    {
+        velocityVertical += up;
     }
 
     public void ChooseDifficulty(Difficulty difficulty)

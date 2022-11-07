@@ -4,14 +4,14 @@ using UnityEngine;
 public class LoseState : State
 {
     private GameStateMachine gameStateMachine;
-    Player player;
+    private Player player;
     private Screens screens;
+    private Timer timer;
 
     public LoseState(StateMachine stateMachine) : base(stateMachine) { }
 
     public override IEnumerator Start()
     {
-        Debug.Log("Lose");
         gameStateMachine = stateMachine as GameStateMachine;
 
         player = gameStateMachine.Player;
@@ -20,6 +20,16 @@ public class LoseState : State
         screens = gameStateMachine.Screens;
         screens.EnableLoseScreen();
 
+        timer = gameStateMachine.Timer;
+        int lastTimer = (int)timer.LastTimer;
+
+        int countTry = gameStateMachine.CountTry;
+
+        screens.LoseScreen.LastTimerText.text = $"Продолжительность последней попытки: {lastTimer}с.";
+        screens.LoseScreen.CountTryText.text = $"Всего попыток: {countTry}";
+
+        screens.LoseScreen.restartGameEvent += SetBeginGameState;
+
         yield break;
     }
 
@@ -27,6 +37,13 @@ public class LoseState : State
     {
         player.enabled = true;
 
+        screens.LoseScreen.restartGameEvent -= SetBeginGameState;
+
         yield break;
+    }
+
+    private void SetBeginGameState()
+    {
+        stateMachine.SetState(new InGameState(stateMachine));
     }
 }
