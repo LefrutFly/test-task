@@ -11,8 +11,17 @@ public class MovableTerrain : MonoBehaviour
     [SerializeField] private float currentVelocityHorizontal;
     [Space]
     [SerializeField] private Vector3 startposition;
+    [Space]
+    [SerializeField] private GameObject walls_1;
+    [SerializeField] private GameObject walls_2;
+    [Space]
+    [SerializeField] private Transform firstPoint;
+    [SerializeField] private Transform secondPoint;
 
     private bool isMoving = true;
+    private bool isCurrentW1 = true;
+    private bool isCurrentW2 = false;
+
 
     private void Awake()
     {
@@ -21,6 +30,25 @@ public class MovableTerrain : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isCurrentW1)
+        {
+            if (walls_1.transform.position.x <= firstPoint.transform.position.x)
+            {
+                walls_2.transform.position = new Vector3(secondPoint.position.x, 0, 0);
+                isCurrentW1 = false;
+                isCurrentW2 = true;
+            }
+        }
+        if (isCurrentW2)
+        {
+            if (walls_2.transform.position.x <= firstPoint.transform.position.x)
+            {
+                walls_1.transform.position = new Vector3(secondPoint.position.x, 0, 0);
+                isCurrentW1 = true;
+                isCurrentW2 = false;
+            }
+        }
+
         if (isMoving)
         {
             transform.Translate(new Vector3(-currentVelocityHorizontal, 0, 0) * Time.deltaTime);
