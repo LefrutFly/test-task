@@ -8,6 +8,7 @@ public class InGameState : State
     private Screens screens;
     private Difficulty difficulty;
     private Timer timer;
+    private MovableTerrain movableTerrain; 
 
     public InGameState(StateMachine stateMachine) : base(stateMachine) { }
 
@@ -18,15 +19,17 @@ public class InGameState : State
         screens = gameStateMachine.Screens;
         difficulty = screens.StartScreen.Difficulty;
         timer = gameStateMachine.Timer;
+        movableTerrain = gameStateMachine.MovableTerrain;
 
         EnableInGameScreen();
         EnablePlayer();
         SetStartPositionPlayer();
         SetStartVelocityVerticalPlayer();
-        ChoosePlayerDifficulty();
+        ChooseDifficulty();
         RestartCurrentTimer();
         RestartLastTimer();
         AddTry();
+        ResetMove();
 
         player.LoseGameEvent += SetLoseState;
 
@@ -38,6 +41,7 @@ public class InGameState : State
         player.LoseGameEvent -= SetLoseState;
 
         ResetMaxTimer();
+        StopMove();
 
         yield break;
     }
@@ -62,9 +66,9 @@ public class InGameState : State
         player.Move.SetStartVelocityVertical();
     }
 
-    private void ChoosePlayerDifficulty()
+    private void ChooseDifficulty()
     {
-        player.Move.ChooseDifficulty(difficulty);
+        movableTerrain.ChooseDifficulty(difficulty);
     }
 
     private void RestartCurrentTimer()
@@ -85,6 +89,17 @@ public class InGameState : State
     private void AddTry()
     {
         gameStateMachine.CountTry++;
+    }
+
+    private void ResetMove()
+    {
+        movableTerrain.ResetPosiotion();
+        movableTerrain.StartMove();
+    }
+
+    private void StopMove()
+    {
+        movableTerrain.StopMove();
     }
 
     private void SetLoseState()

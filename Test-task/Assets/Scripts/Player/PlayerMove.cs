@@ -3,18 +3,10 @@
 [System.Serializable]
 public class PlayerMove
 {
-    [SerializeField] private float velocityHorizontal1;
-    [SerializeField] private float velocityHorizontal2;
-    [SerializeField] private float velocityHorizontal3;
-    [Space]
     [SerializeField] private float velocityVertical;
 
-    public float VelocityHorizontal1 => velocityHorizontal1;
-    public float VelocityHorizontal2 => velocityHorizontal2;
-    public float VelocityHorizontal3 => velocityHorizontal3;
     public float VelocityVertical { get => velocityVertical; set => velocityVertical = value; }
 
-    private float currentVelocityHorizontal;
     private Rigidbody2D playerRigidbody;
     private KeyCode upKey;
     private float startVelocityVertical;
@@ -36,14 +28,6 @@ public class PlayerMove
         velocityVertical += up;
     }
 
-    public void ChooseDifficulty(Difficulty difficulty)
-    {
-        if (difficulty == Difficulty.Easy) currentVelocityHorizontal = velocityHorizontal1;
-        else if (difficulty == Difficulty.Normal) currentVelocityHorizontal = velocityHorizontal2;
-        else if (difficulty == Difficulty.Hard) currentVelocityHorizontal = velocityHorizontal3;
-        else currentVelocityHorizontal = velocityHorizontal2;
-    }
-
     public void Move(object sender)
     {
         if (playerRigidbody == null)
@@ -58,12 +42,6 @@ public class PlayerMove
             return;
         }
 
-        if (currentVelocityHorizontal == 0) 
-        {
-            Debug.LogError($"In {sender} currentVelocityHorizontal = 0! The ChooseDifficulty method can help.");
-            return;
-        }
-
         if (isUpPressed())
         {
             GoUp();
@@ -72,7 +50,6 @@ public class PlayerMove
         {
             GoDown();
         }
-        GoForward();
     }
 
     private bool isUpPressed()
@@ -85,11 +62,6 @@ public class PlayerMove
         {
             return false;
         }
-    }
-
-    private void GoForward()
-    {
-        playerRigidbody.velocity = new Vector2(currentVelocityHorizontal * Time.deltaTime, playerRigidbody.velocity.y);
     }
 
     private void GoUp()
