@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 using Zenject;
 
 [RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Collider2D))]
 public class Player : MonoBehaviour
 {
+    public event Action LoseGameEvent;
+
     [SerializeField] private PlayerMove move;
 
     [Inject] private PlayerControlSO playerControlSO;
@@ -12,6 +15,7 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D playerRigidbody;
     private KeyCode upKey;
+
 
     private void Awake()
     {
@@ -25,12 +29,22 @@ public class Player : MonoBehaviour
         move.Move(this);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.tag == "Wall")
+        if (collision.gameObject.tag == "Wall")
         {
-
+            LoseGameEvent?.Invoke();
         }
+    }
+
+    private void OnEnable()
+    {
+        playerRigidbody.velocity = Vector3.zero;
+    }
+
+    private void OnDisable()
+    {
+        playerRigidbody.velocity = Vector3.zero;
     }
 
     private void InitializeRigidbody()

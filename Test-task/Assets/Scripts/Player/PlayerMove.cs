@@ -3,12 +3,18 @@
 [System.Serializable]
 public class PlayerMove
 {
-    [SerializeField] private float velocityHorizontal;
+    [SerializeField] private float velocityHorizontal1;
+    [SerializeField] private float velocityHorizontal2;
+    [SerializeField] private float velocityHorizontal3;
+    [Space]
     [SerializeField] private float velocityVertical;
 
-    public float VelocityHorizontal => velocityHorizontal;
+    public float VelocityHorizontal1 => velocityHorizontal1;
+    public float VelocityHorizontal2 => velocityHorizontal2;
+    public float VelocityHorizontal3 => velocityHorizontal3;
     public float VelocityVertical => velocityVertical;
 
+    private float currentVelocityHorizontal;
     private Rigidbody2D playerRigidbody;
     private KeyCode upKey;
 
@@ -16,6 +22,14 @@ public class PlayerMove
     {
         this.playerRigidbody = playerRigidbody;
         this.upKey = upKey;
+    }
+
+    public void ChooseDifficulty(Difficulty difficulty)
+    {
+        if (difficulty == Difficulty.Easy) currentVelocityHorizontal = velocityHorizontal1;
+        else if (difficulty == Difficulty.Normal) currentVelocityHorizontal = velocityHorizontal2;
+        else if (difficulty == Difficulty.Hard) currentVelocityHorizontal = velocityHorizontal3;
+        else currentVelocityHorizontal = velocityHorizontal2;
     }
 
     public void Move(object sender)
@@ -29,6 +43,12 @@ public class PlayerMove
         if (upKey == KeyCode.None)
         {
             Debug.LogError($"In {sender} the Up key is not assigned! The Initialize method can help.");
+            return;
+        }
+
+        if (currentVelocityHorizontal == 0) 
+        {
+            Debug.LogError($"In {sender} currentVelocityHorizontal = 0! The ChooseDifficulty method can help.");
             return;
         }
 
@@ -57,7 +77,7 @@ public class PlayerMove
 
     private void GoForward()
     {
-        playerRigidbody.velocity = new Vector2(velocityHorizontal * Time.deltaTime, playerRigidbody.velocity.y);
+        playerRigidbody.velocity = new Vector2(currentVelocityHorizontal * Time.deltaTime, playerRigidbody.velocity.y);
     }
 
     private void GoUp()
